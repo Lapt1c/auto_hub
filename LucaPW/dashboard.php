@@ -9,12 +9,12 @@
 <body class="body-dashboard">
 
 <nav class="meniu-principal">
-    <ul>
-        <li><a href="InchieriVanzari.html" title="Pagina Principala">Catalog Auto</a></li>
-        <li><a href="PanouAdministrare.html" title="Pagina Administrare">Panou Administrare</a></li>
-        <li><a href="dashboard.html" title="Widgeturi">Dashboard</a></li>
-        <li><a href="sprites.html" title="Sprite-uri">Meniu Sprites</a></li>
-    </ul>
+  <ul>
+    <li><a href="InchieriVanzari.php" title="Pagina Principala">Catalog Auto</a></li>
+    <li><a href="PanouAdministrare.php" title="Pagina Administrare">Panou Administrare</a></li>
+    <li><a href="dashboard.php" title="Widgeturi">Dashboard</a></li>
+    <li><a href="sprites.php" title="Sprite-uri">Meniu Sprites</a></li>
+  </ul>
 </nav>
 
 <main class="dashboard-container">
