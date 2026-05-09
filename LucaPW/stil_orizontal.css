@@ -1,0 +1,88 @@
+:root {
+    --culoare-primara: #2c3e50;
+    --culoare-secundara: #3498db;
+    --culoare-text: #ffffff;
+    --culoare-accent: #e74c3c;
+    --font-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-family: var(--font-principal);
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.meniu-principal {
+    background-color: var(--culoare-primara);
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.meniu-principal ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.meniu-principal a {
+    display: block;
+    color: var(--culoare-text);
+    text-align: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.meniu-principal a:hover {
+    background-color: var(--culoare-secundara);
+    border-radius: 4px;
+}
+
+.meniu-principal a:active {
+    background-color: var(--culoare-accent);
+}
+
+.meniu-principal li:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--culoare-primara);
+    color: var(--culoare-text);
+}
+
+fieldset {
+    border: 2px solid var(--culoare-secundara);
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+}
+
+legend {
+    font-weight: bold;
+    color: var(--culoare-primara);
+    background: #fff;
+    padding: 0 10px;
+}

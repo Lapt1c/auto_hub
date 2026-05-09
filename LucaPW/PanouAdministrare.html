@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>AutoHub - Administrare</title>
+  <link rel="stylesheet" href="stil_responsive.css">
+
+  <style>
+    header {
+      overflow-x: hidden;
+      padding: 10px 0;
+    }
+    header h1 {
+      display: inline-block;
+      background: linear-gradient(90deg, #2c3e50 0%, #3498db 30%, #ffffff 50%, #3498db 70%, #2c3e50 100%);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+
+      animation: brakeAndSettle 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+      headlightShine 3s linear infinite;
+      padding-right: 20px;
+    }
+
+    @keyframes brakeAndSettle {
+      0% {
+        transform: translateX(-100vw) skewX(-40deg);
+        opacity: 0;
+      }
+      60% {
+        transform: translateX(30px) skewX(15deg);
+        opacity: 1;
+      }
+      80% {
+        transform: translateX(-10px) skewX(-5deg);
+      }
+      100% {
+        transform: translateX(0) skewX(0);
+      }
+    }
+
+    /* animatia continua*/
+    @keyframes headlightShine {
+      to {
+        background-position: 200% center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Panou Administrare - Adaugare Vehicul Nou</h1>
+</header>
+
+<nav class="meniu-principal">
+  <ul>
+    <li><a href="InchieriVanzari.html" title="Pagina Principala">Catalog Auto</a></li>
+    <li><a href="PanouAdministrare.html" title="Pagina Administrare">Panou Administrare</a></li>
+    <li><a href="dashboard.html" title="Widgeturi">Dashboard</a></li>
+    <li><a href="sprites.html" title="Sprite-uri">Meniu Sprites</a></li>
+  </ul>
+</nav>
+
+<main>
+  <form id="form-admin" action="#" method="post" novalidate>
+    <fieldset>
+      <legend>Date Identificare si Configurare</legend>
+
+      <p>
+        Cod Unic (VIN):
+        <input type="text" name="vin" value="RO-AUTO-2026" readonly maxlength="17" size="20">
+      </p>
+
+      <p>
+        Marca Vehicul:
+        <select name="marca" id="select-marca">
+          <option value="">-- Selectează Marca --</option>
+        </select>
+        &nbsp;&nbsp;Model:
+        <select name="model" id="select-model" disabled>
+          <option value="">-- Alegeți întâi marca --</option>
+        </select>
+      </p>
+
+      <p>
+        Categorie Vehicul:<br>
+        <select name="cat" multiple size="3">
+          <option value="sedan" selected>Sedan</option>
+          <option value="suv">SUV</option>
+          <option value="utilitara">Utilitara</option>
+        </select>
+      </p>
+
+      <p>
+        Tip Combustibil:
+        <label><input type="radio" name="comb" value="ben" checked> Benzina</label>
+        <label><input type="radio" name="comb" value="die"> Diesel</label>
+        <label><input type="radio" name="comb" value="ele" disabled> Electric (Indisponibil)</label>
+      </p>
+
+      <p>
+        Dotari Siguranta:
+        <label><input type="checkbox" name="abs" value="da" checked> ABS</label>
+        <label><input type="checkbox" name="esp" value="da"> ESP</label>
+        <label><input type="checkbox" name="airbag" value="da"> Airbag Cortina</label>
+      </p>
+
+      <p>
+        An Fabricatie (Maxim 2026):
+        <input type="number" name="an" id="an-fabricatie" value="2024" max="2026">
+        &nbsp;&nbsp;Pret (Euro):
+        <input type="number" name="pret" step="500" value="15000">
+      </p>
+
+      <p>
+        Descriere Tehnica: <br>
+        <textarea name="desc" cols="50" rows="4">Masina este dotata cu scaune incalzite si tapiterie de piele.</textarea>
+      </p>
+
+      <p>
+        Culoare Exterior: <input type="color" name="culoare"> &nbsp;
+        Data intrarii in stoc: <input type="date" name="data" id="data-intrare"> &nbsp;
+        Kilometraj: <input type="range" name="km" value="0" max="300000">
+      </p>
+
+      <p>
+        Email Furnizor: <input type="email" name="mail"> &nbsp;
+        Parola Sistem: <input type="password" name="pass" size="10"> &nbsp;
+        Fisier Garantie: <input type="file" name="gar">
+      </p>
+
+      <p>
+        <input type="submit" value="Trimite Datele">
+        <input type="reset" value="Reseteaza Formularul">
+      </p>
+
+    </fieldset>
+  </form>
+</main>
+<script src="jquery-3.7.1.min.js"></script>
+<script src="date_masini.js"></script>
+<script src="dependente.js"></script>
+<script src="validare.js"></script>
+</body>
+</html>

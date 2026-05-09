@@ -1,0 +1,94 @@
+:root {
+    --culoare-meniu: #1abc9c;
+    --culoare-hover: #16a085;
+    --culoare-text: #ffffff;
+    --culoare-accent: #f1c40f;
+    --latime-sidebar: 260px;
+    --font-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-family: var(--font-principal);
+    margin: 0;
+    padding: 30px 50px;
+    background-color: #f4f7f6;
+    color: #333;
+
+    margin-left: var(--latime-sidebar);
+}
+
+.meniu-principal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--latime-sidebar);
+    height: 100vh;
+    background-color: var(--culoare-meniu);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.meniu-principal ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+}
+
+.meniu-principal a {
+    display: block;
+    color: var(--culoare-text);
+    text-decoration: none;
+    padding: 20px 30px;
+    font-size: 17px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+.meniu-principal a:hover {
+    background-color: var(--culoare-hover);
+    padding-left: 45px;
+    border-left: 5px solid var(--culoare-accent);
+}
+
+.meniu-principal a:active {
+    color: var(--culoare-accent);
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--culoare-meniu);
+    color: var(--culoare-text);
+}
+
+fieldset {
+    border: 2px solid var(--culoare-hover);
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+}
+
+legend {
+    font-weight: bold;
+    color: var(--culoare-hover);
+    background: #fff;
+    padding: 0 10px;
+    border: 1px solid var(--culoare-hover);
+    border-radius: 4px;
+}
