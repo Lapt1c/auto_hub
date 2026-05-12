@@ -5,11 +5,10 @@ require_once 'config_db.php';
 
 $mesaj_eroare = '';
 
-if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
+if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {//daca nu sunt logat dar am bifat anterior remember me
     $token = $_COOKIE['remember_token'];
-
     $stmt = $conn_pdo->prepare("SELECT * FROM utilizatori WHERE remember_token = :token");
-    $stmt->execute(['token' => $token]);
+    $stmt->execute(['token' => $token]);//Prepared Statement evitam sql injection
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
@@ -22,12 +21,13 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {///se activaza doar la apasarea butonului
+    $username = trim($_POST['username'] ?? '');//trim elimina spatiile de la fial sau inceput
+    $password = $_POST['password'] ?? '';/// ??  previne erorile daca campul e gol
     $captcha_input = trim($_POST['captcha'] ?? '');
-    $remember = isset($_POST['remember']); // Boolean: true dacă a bifat căsuța
+    $remember = isset($_POST['remember']); // true daca s a bifat casuta
 
+///se verifica captcha
     if (empty($_SESSION['captcha_code']) || strtolower($captcha_input) !== strtolower($_SESSION['captcha_code'])) {
         $mesaj_eroare = "Codul CAPTCHA introdus este incorect!";
     } else {
@@ -35,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(['username' => $username]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password_hash'])) {
+        if ($user && password_verify($password, $user['password_hash'])) {///verificarea parolei
+        ///password_verify lucreaza cu algoritmul BCRYPT
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['rol'] = $user['rol'];
@@ -47,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 setcookie('remember_token', $nou_token, time() + (86400 * 30), "/", "", false, true);
             }
 
-            unset($_SESSION['captcha_code']);
+            unset($_SESSION['captcha_code']);//sterge codul captcha vechi
             header("Location: PanouAdministrare.php");
             exit();
         } else {
@@ -85,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="eroare"><?= htmlspecialchars($mesaj_eroare) ?></div>
     <?php endif; ?>
 
-    <form action="login.php" method="POST">
+<form action="login.php" method="POST">
         <div class="form-group">
             <label for="username">Nume utilizator:</label>
             <input type="text" id="username" name="username" required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">

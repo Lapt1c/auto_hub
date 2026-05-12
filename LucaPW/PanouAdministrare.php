@@ -1,8 +1,8 @@
 <?php
-// Pornim sesiunea obligatoriu la începutul paginii
+// pornim sesiunea
 session_start();
 
-// 1. PROTECȚIA SESIUNII: Dacă nu există un user_id în sesiune, redirecționăm la login
+// dacă nu exista un user_id in sesiune mergem la login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 // Includem configurarea bazei de date
 require_once 'config_db.php';
 
-// 2. PROCESARE DECONECTARE (LOGOUT)
+// logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_unset();
     session_destroy();
@@ -25,9 +25,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 $mesaj_succes = '';
 $mesaj_eroare = '';
 
-// ====================================================================
 // CERINȚĂ: PROCESARE FORMULAR ȘI UPLOAD DE FIȘIERE PE SERVER
-// ====================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $marca = trim($_POST['marca'] ?? '');
     $model = trim($_POST['model'] ?? '');
@@ -113,6 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .btn-logout:hover { background: #c0392b; }
     .alert-succes { background: #2ecc71; color: white; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; }
     .alert-eroare { background: #e74c3c; color: white; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; }
+
+    /* Stiluri simple pentru tabelul de sub formular */
+    .table-admin { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .table-admin th, .table-admin td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+    .table-admin th { background-color: #2c3e50; color: white; }
   </style>
 </head>
 
@@ -219,7 +222,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </fieldset>
   </form>
+
+  <h2 style="margin-top: 40px; border-bottom: 2px solid #2c3e50; padding-bottom: 5px;">Vehicule adăugate recent</h2>
+  <table class="table-admin">
+      <thead>
+          <tr>
+              <th>ID</th>
+              <th>Marcă</th>
+              <th>Model</th>
+              <th>Preț</th>
+              <th>Imagine</th>
+          </tr>
+      </thead>
+      <tbody>
+          <?php
+          try {
+              $stmt_lista = $conn_pdo->query("SELECT * FROM masini ORDER BY id DESC LIMIT 5");
+              while ($rand = $stmt_lista->fetch(PDO::FETCH_ASSOC)) {
+                  $img_src = !empty($rand['imagine']) ? htmlspecialchars($rand['imagine']) : 'logo_auto.png';
+                  echo "<tr>";
+                  echo "<td>{$rand['id']}</td>";
+                  echo "<td>" . htmlspecialchars($rand['marca']) . "</td>";
+                  echo "<td>" . htmlspecialchars($rand['model']) . "</td>";
+                  echo "<td>" . number_format($rand['pret'], 0, ',', '.') . " €</td>";
+                  echo "<td><img src='{$img_src}' width='60' style='object-fit:cover; border-radius:4px;'></td>";
+                  echo "</tr>";
+              }
+          } catch (PDOException $e) {
+              echo "<tr><td colspan='5'>Eroare la citirea bazei de date.</td></tr>";
+          }
+          ?>
+      </tbody>
+  </table>
 </main>
+
 <script src="jquery-3.7.1.min.js"></script>
 <script src="date_masini.js"></script>
 <script src="dependente.js"></script>
