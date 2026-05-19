@@ -2,13 +2,19 @@
 // pornim sesiunea
 session_start();
 
-// dacă nu exista un user_id in sesiune mergem la login
+// daca nu exista un user_id in sesiune mergem la login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+//daca e user normal
+if ($_SESSION['rol'] !== 'admin') {
+    // Îl trimitem cu forța pe pagina de vizionare a catalogului
+    header("Location: InchieriVanzari.php");
+    exit();
+}
 
-// Includem configurarea bazei de date
+// includem configurarea bazei de date
 require_once 'config_db.php';
 
 // logout
@@ -130,6 +136,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="PanouAdministrare.php?action=logout" class="btn-logout">Deconectare</a>
 </div>
 
+
+<section style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px dashed #2c3e50;">
+    <h2 style="margin-top: 0; font-size: 1.2rem; color: #2c3e50;">Setări Profil (Date precompletate din DB)</h2>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+
+        <p>
+            <label>Nume Utilizator:</label><br>
+            <input type="text" value="<?php echo htmlspecialchars($_SESSION['username']); ?>" readonly style="padding: 8px; background: #eee; border: 1px solid #ccc; border-radius: 4px;">
+        </p>
+
+        <p>
+            <label>Rol în Sistem:</label><br>
+            <select disabled style="padding: 8px; background: #eee; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="admin" <?php echo ($_SESSION['rol'] == 'admin') ? 'selected' : ''; ?>>Administrator</option>
+                <option value="client" <?php echo ($_SESSION['rol'] == 'client') ? 'selected' : ''; ?>>Client</option>
+            </select>
+        </p>
+
+        <p>
+            <label>Notă stare cont:</label><br>
+            <textarea readonly rows="1" style="padding: 8px; background: #eee; border: 1px solid #ccc; border-radius: 4px;">Utilizator logat cu drepturi de <?php echo htmlspecialchars($_SESSION['rol']); ?></textarea>
+        </p>
+    </div>
+</section>
 <nav class="meniu-principal">
   <ul>
     <li><a href="InchieriVanzari.php" title="Pagina Principala">Catalog Auto</a></li>

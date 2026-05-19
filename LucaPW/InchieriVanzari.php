@@ -1,53 +1,19 @@
-<?php
-session_start();
-require_once 'config_db.php';
-
-// Preluăm mașinile din baza de date, împreună cu numele utilizatorului care le-a adăugat
-$masini = [];
-try {
-    $query = "SELECT m.*, u.username FROM masini m
-              LEFT JOIN utilizatori u ON m.adaugat_de = u.id
-              ORDER BY m.id DESC";
-    $stmt = $conn_pdo->query($query);
-    $masini = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $eroare_db = "Eroare la încărcarea datelor: " . $e->getMessage();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
   <meta charset="UTF-8">
-  <title>AutoHub - Catalog Auto</title>
+  <title>AutoHub - Catalogul de Masini</title>
   <link rel="stylesheet" href="stil_responsive.css">
-  <style>
-    .user-bar { background: #2c3e50; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; margin-bottom: 15px; font-family: Arial, sans-serif; }
-    .btn-logout { background: #e74c3c; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; }
-    .btn-logout:hover { background: #c0392b; }
-
-    /* Stiluri specifice pentru grila de mașini afișată dinamic */
-    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-    .card-masina { background: white; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-    .card-masina img { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid #eee; }
-    .card-detalii { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .card-detalii h3 { margin: 0 0 10px 0; color: #2c3e50; font-size: 1.3rem; }
-    .pret { font-size: 1.2rem; color: #e74c3c; font-weight: bold; margin: 5px 0; }
-    .footer-card { font-size: 0.85rem; color: #7f8c8d; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
-  </style>
 </head>
+
 <body>
 
 <header>
-  <h1 style="text-align: center; padding: 15px 0; color: #2c3e50;">Catalog Auto - Închirieri & Vânzări</h1>
+  <h1>
+    <img src="logo_auto.png" alt="Logo AutoHub" width="100" height="50" title="AutoHub Logo">
+    Sistem de Gestiune Parc Auto
+  </h1>
 </header>
-
-<?php if (isset($_SESSION['user_id'])): ?>
-<div class="user-bar">
-    <span>Autentificat ca: <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></span>
-    <a href="PanouAdministrare.php?action=logout" class="btn-logout">Deconectare</a>
-</div>
-<?php endif; ?>
 
 <nav class="meniu-principal">
   <ul>
@@ -59,42 +25,181 @@ try {
 </nav>
 
 <main>
-  <h2 style="border-bottom: 2px solid #3498db; padding-bottom: 5px;">Vehicule Disponibile</h2>
 
-  <?php if (isset($eroare_db)): ?>
-      <p style="color: #e74c3c; font-weight: bold;"><?php echo htmlspecialchars($eroare_db); ?></p>
-  <?php endif; ?>
+  <section id="carusel-oferte" class="carousel-container">
+    <button id="btn-prev" class="carousel-btn btn-prev">&#10094;</button>
+    <button id="btn-next" class="carousel-btn btn-next">&#10095;</button>
+  </section>
 
-  <div class="catalog-grid">
-      <?php if (!empty($masini)): ?>
-          <?php foreach ($masini as $m): ?>
-              <?php
-                  // Setăm o imagine default dacă rândul curent nu conține o imagine validă
-                  $img = !empty($m['imagine']) ? htmlspecialchars($m['imagine']) : 'logo_auto.png';
-                  $user_adaugare = !empty($m['username']) ? htmlspecialchars($m['username']) : 'Necunoscut';
-              ?>
-              <div class="card-masina">
-                  <img src="<?php echo $img; ?>" alt="Imagine Vehicul">
-                  <div class="card-detalii">
-                      <div>
-                          <h3><?php echo htmlspecialchars($m['marca'] . ' ' . $m['model']); ?></h3>
-                          <p class="pret"><?php echo number_format($m['pret'], 0, ',', '.'); ?> €</p>
-                      </div>
-                      <div class="footer-card">
-                          Adăugat de: <strong><?php echo $user_adaugare; ?></strong>
-                      </div>
-                  </div>
-              </div>
-          <?php endforeach; ?>
-      <?php else: ?>
-          <p style="grid-column: 1 / -1; text-align: center; font-size: 1.1rem; color: #7f8c8d; padding: 40px 0;">
-              Nu s-au găsit vehicule înregistrate în baza de date. Adaugă unul nou din secțiunea de Administrare.
-          </p>
-      <?php endif; ?>
-  </div>
+  <section id="sectiune-comparatie">
+    <h2>⚖️ Comparație Tehnică (Tabel Vertical)</h2>
+    <p><i>Apasă pe specificațiile din stânga (Preț, Putere etc.) pentru a sorta modelele!</i></p>
+    <div id="container-tabel-vertical">
+    </div>
+  </section>
+
+  <h2>Categorii si Modele Disponibile</h2>
+
+  <h2>Categorii și Modele Disponibile</h2>
+  <ul style="list-style: none; padding-left: 0;">
+    <li>
+      <span class="titlu-expandabil">Autoturisme de oraș</span>
+      <ul class="sublista">
+        <li>Dacia Sandero</li>
+        <li>Renault Clio</li>
+      </ul>
+    </li>
+
+    <li>
+      <span class="titlu-expandabil">Vehicule de teren (SUV)</span>
+      <ul class="sublista">
+        <li>Dacia Duster <b>(Cel mai căutat)</b></li>
+        <li>Hyundai Tucson</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>Servicii Oferite</h2>
+  <ul style="list-style: none; padding-left: 0;">
+    <li>
+      <span class="titlu-expandabil">Vânzări Auto</span>
+      <ol class="sublista" type="a">
+        <li>Rate fixe</li>
+        <li>Leasing operațional</li>
+      </ol>
+    </li>
+    <li style="padding: 5px 5px 5px 25px; color: #666;">
+      Închirieri pe termen scurt (Fără sublistă)
+    </li>
+  </ul>
+  <h2>Stoc Curent si Detalii Tehnice</h2>
+
+  <table>
+    <tr>
+      <th>Imagine</th>
+      <th>Model si Marca</th>
+      <th>Specificatii Detaliate (Tabel Imbricat)</th>
+    </tr>
+    <tr>
+      <td>
+        <img src="masina1.jpg" alt="Poza Masina" width="150" height="100">
+      </td>
+      <td>
+        <p><b>Dacia Duster 2024</b></p>
+        <span>Disponibilitate: </span><strong>In Stoc</strong>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td>Motorizare</td>
+            <td>1.3 TCe Petrol</td>
+          </tr>
+          <tr>
+            <td>Tractiune</td>
+            <td>4x4 Permanent</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <br>
+
+  <table>
+    <tr>
+      <th colspan="2">Program Locatii</th>
+    </tr>
+    <tr>
+      <td>Luni - Vineri</td>
+      <td>08:00 - 18:00</td>
+    </tr>
+  </table>
+
+  <h2>Servicii Oferite</h2>
+
+  <ol type="I">
+    <li>Vanzari Auto
+      <ol type="a">
+        <li>Rate fixe</li>
+        <li>Leasing operational</li>
+      </ol>
+    </li>
+    <li>Inchirieri pe termen scurt</li>
+  </ol>
+  <section id="sectiune-rezervare">
+    <h2>Rezervă un Test Drive</h2>
+    <form id="form-rezervare" action="#" method="post">
+      <fieldset>
+        <legend>Date Programare</legend>
+        <p>Nume Complet: <input type="text" name="nume_client" placeholder="Ex: Popescu Ion"></p>
+        <p>Telefon: <input type="tel" name="telefon" placeholder="07xx xxx xxx"></p>
+        <p>Data și Ora: <input type="datetime-local" name="data_test"></p>
+        <p>
+          Locație preluare:
+          <select name="locatie">
+            <option value="">-- Alege locația --</option>
+            <option value="sediu">Sediu Central</option>
+            <option value="aeroport">Aeroport</option>
+          </select>
+        </p>
+        <p>
+          <label><input type="checkbox" name="termeni" value="acceptat"> Accept termenii și condițiile</label>
+        </p>
+        <button type="submit" class="btn-dashboard">Programează</button>
+      </fieldset>
+    </form>
+  </section>
+<?php
+// 1. Includem conexiunea la baza de date
+require_once 'config_db.php';
+
+try {
+    // 2. Extragem toate mașinile din baza de date
+    // Facem un JOIN cu tabelul utilizatori ca să știm și cine a adăugat-o (opțional)
+    $query = "SELECT m.*, u.username FROM masini m
+              JOIN utilizatori u ON m.adaugat_de = u.id
+              ORDER BY m.id DESC";
+    $stmt = $conn_pdo->query($query);
+    $masini = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Eroare la încărcarea mașinilor: " . $e->getMessage();
+}
+?>
+
+<section class="catalog-containter" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px;">
+    <?php if (count($masini) > 0): ?>
+        <?php foreach ($masini as $masina): ?>
+            <div class="card-auto" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+
+                <?php
+                    $cale_imagine = !empty($masina['imagine']) ? $masina['imagine'] : 'logo_auto.png';
+                ?>
+                <img src="<?php echo htmlspecialchars($cale_imagine); ?>" alt="Imagine Mașină" style="width: 100%; height: 200px; object-fit: cover;">
+
+                <div style="padding: 15px;">
+                    <h3 style="margin: 0; color: #2c3e50;">
+                        <?php echo htmlspecialchars($masina['marca'] . ' ' . $masina['model']); ?>
+                    </h3>
+                    <p style="font-size: 1.2rem; color: #e74c3c; font-weight: bold; margin: 10px 0;">
+                        Preț: <?php echo number_format($masina['pret'], 0, ',', '.'); ?> €
+                    </p>
+                    <hr>
+                    <p style="font-size: 0.8rem; color: #7f8c8d;">
+                        Adăugat de: <strong><?php echo htmlspecialchars($masina['username']); ?></strong>
+                    </p>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p style="text-align: center; grid-column: 1 / -1;">Nu există mașini în baza de date.</p>
+    <?php endif; ?>
+</section>
 </main>
-
 <script src="jquery-3.7.1.min.js"></script>
-<script src="index.js"></script>
+<script src="validare.js"></script>
+<script src="carousel.js"></script>
+<script src="date_tabele.js"></script>
+<script src="tabele.js"></script>
+<script src="liste.js"></script>
 </body>
 </html>

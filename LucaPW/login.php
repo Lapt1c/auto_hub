@@ -16,7 +16,13 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {//daca n
         $_SESSION['username'] = $user['username'];
         $_SESSION['rol'] = $user['rol'];
 
-        header("Location: PanouAdministrare.php");
+        // Verificam rolul
+        if ($_SESSION['rol'] === 'admin') {
+            header("Location: PanouAdministrare.php"); // Adminii merg la panou
+        } else {
+            header("Location: InchieriVanzari.php");   // Clienții merg la catalog
+        }
+        exit();
         exit();
     }
 }
@@ -49,7 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {///se activaza doar la apasarea buto
             }
 
             unset($_SESSION['captcha_code']);//sterge codul captcha vechi
-            header("Location: PanouAdministrare.php");
+            // Verificam rolul\
+            if ($_SESSION['rol'] === 'admin') {
+                header("Location: PanouAdministrare.php"); // Adminii merg la panou
+            } else {
+                header("Location: InchieriVanzari.php");   // Clienții merg la catalog
+            }
+            exit();
             exit();
         } else {
             $mesaj_eroare = "Nume de utilizator sau parolă incorecte!";
